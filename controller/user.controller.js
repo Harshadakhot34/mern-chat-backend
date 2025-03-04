@@ -26,7 +26,11 @@ export const signup = async (req, res) => {
 
     if (newUser) {
       createTokenSaveCookie(newUser._id, res);
-      res.status(201).json({ message: "User created successfully.", newUser });
+      res.status(201).json({ message: "User created successfully.",  user: {
+        _id: newUser._id,
+        fullname: newUser.fullname,
+        email: newUser.email,
+      }, });
     }
   } catch (error) {
     res.status(500).json({ error: "Something went wrong.." });
