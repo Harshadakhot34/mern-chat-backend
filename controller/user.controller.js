@@ -26,11 +26,14 @@ export const signup = async (req, res) => {
 
     if (newUser) {
       createTokenSaveCookie(newUser._id, res);
-      res.status(201).json({ message: "User created successfully.",  user: {
-        _id: newUser._id,
-        fullname: newUser.fullname,
-        email: newUser.email,
-      }, });
+      res.status(201).json({
+        message: "User created successfully.",
+        user: {
+          _id: newUser._id,
+          fullname: newUser.fullname,
+          email: newUser.email,
+        },
+      });
     }
   } catch (error) {
     res.status(500).json({ error: "Something went wrong.." });
@@ -40,13 +43,15 @@ export const signup = async (req, res) => {
 export const logout = async (req, res) => {
   try {
     res.clearCookie("jwt");
-    res.status(20``).json({
+    res.status(200).json({
       message: "User logged out successfully.",
     });
   } catch (error) {
     res.status(500).json({ error: "Something went wrong.." });
   }
 };
+
+
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
@@ -69,5 +74,17 @@ export const login = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ error: "Something went wrong.." });
+  }
+};
+
+export const allUser = async (req, res) => {
+  try {
+    const loggedInUser = req.user._id;
+    const allUser = await User.find({ _id: { $ne: loggedInUser } }).select(
+      "-password"
+    );
+    res.status(201).json(allUser);
+  } catch (error) {
+    console.log("error in alluser", error);
   }
 };
